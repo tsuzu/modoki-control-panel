@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"flag"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -41,11 +39,7 @@ func debugHandler() http.Handler {
 		url.Scheme = "http"
 		url.Host = *debug
 
-		buffer, err := ioutil.ReadAll(request.Body)
-		if err != nil {
-			log.Fatal(err.Error())
-		}
-		req, err := http.NewRequest(request.Method, url.String(), bytes.NewBuffer(buffer))
+		req, err := http.NewRequest(request.Method, url.String(), request.Body)
 		if err != nil {
 			log.Fatal(err.Error())
 		}
