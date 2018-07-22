@@ -95,7 +95,7 @@ export default {
   },
   computed: {
     containers: function () {
-      return this.$store.containers
+      return this.$store.state.containers
     }
   }
 }

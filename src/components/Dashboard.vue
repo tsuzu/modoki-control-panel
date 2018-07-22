@@ -94,13 +94,13 @@ export default {
   },
   computed: {
     createdCount: function () {
-      return this.$store.containers.length
+      return this.$store.state.containers.length
     },
     runningCount: function () {
-      return this.$store.containers.filter(x => x.status === 'Running').length
+      return this.$store.state.containers.filter(x => x.status === 'Running').length
     },
     errorCount: function () {
-      return this.$store.containers.filter(x => x.status === 'Error').length
+      return this.$store.state.containers.filter(x => x.status === 'Error').length
     }
   }
 }
