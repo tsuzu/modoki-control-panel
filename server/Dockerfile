@@ -12,7 +12,7 @@ RUN CGO_ENABLED=0 go build -o /bin/cpserver
 FROM scratch
 
 COPY --from=build /bin/cpserver /bin/cpserver
-COPY ./dist /files
+COPY ./dist /dist
 WORKDIR /
 ENTRYPOINT ["/bin/cpserver"]
 CMD ["--help"]
