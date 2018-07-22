@@ -27,7 +27,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="grey darken-1" flat @click.native="dialog = false">Cancel</v-btn>
-        <v-btn color="red darken-1" flat @click.native="dialog = false">Remove</v-btn>
+        <v-btn color="red darken-1" flat @click.native="remove()">Remove</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -39,6 +39,15 @@ export default {
   data: () => ({
     checked: false,
     dialog: false
-  })
+  }),
+  methods: {
+    remove: async function () {
+      this.dialog = false
+
+      var client = await this.getClient()
+
+      await client.container.container_remove({id: this.cid})
+    }
+  }
 }
 </script>

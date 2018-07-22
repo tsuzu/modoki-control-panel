@@ -7,7 +7,7 @@
       <h1>New Container</h1>
     </v-layout>
 
-    <v-form v-model="valid">
+    <v-form v-model="valid" @submit="submit()">
     <v-text-field
       v-model="name"
       :counter="64"
@@ -66,6 +66,15 @@ export default {
   methods: {
     cancel: function () {
       this.$router.push('.')
+    },
+    submit: async function () {
+      var client = await this.getClient()
+
+      client.container.container_create({
+        name: this.name,
+        image: this.image,
+        command: this.command.split(',')
+      })
     }
   }
 

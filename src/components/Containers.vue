@@ -9,6 +9,7 @@
       <h1>Containers</h1>
       <v-btn
         icon
+        @click.stop="fetchContainers()"
         >
         <v-icon>cached</v-icon>
       </v-btn>
@@ -62,18 +63,25 @@ export default {
     'container-config': ContainerConfig,
     'container-remove': ContainerRemove
   },
+  methods: {
+    fetchContainers: async function () {
+      // console.log(this.client)
+      this.loading = true
+
+      var client = await this.getClient()
+      const res = this.asJSON(await client.apis.container.container_list())
+
+      console.dir(res)
+
+      this.$store.commit('setContainers', res)
+      this.loading = false
+    }
+  },
   data () {
+    this.fetchContainers()
+
     return {
-      containers: [
-        {
-          id: 1,
-          name: 'Hello',
-          image: 'ubuntu',
-          command: 'echo Hello',
-          status: 'running'
-        }
-      ],
-      loading: true,
+      loading: false,
       pagination: {},
       headers: [
         { text: 'ID', sortable: false, align: 'center' },
@@ -82,11 +90,16 @@ export default {
         { text: 'Command', sortable: false, align: 'center' },
         { text: 'Status', sortable: false, align: 'center' },
         { text: '#', sortable: false }
-      ],
-      dialog: false
+      ]
+    }
+  },
+  computed: {
+    containers: function () {
+      return this.$store.containers
     }
   }
 }
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

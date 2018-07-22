@@ -18,7 +18,7 @@
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field label="Default Shell"></v-text-field>
+              <v-text-field label="Default Shell" v-model="defaultShell"></v-text-field>
             </v-flex>
           </v-layout>
         </v-container>
@@ -36,8 +36,17 @@
 <script>
 export default {
   props: ['cid'],
+  created: async function () {
+    var client = await this.getClient()
+
+    const res = this.asJSON(await client.container.container_getConfig({id: this.cid}))
+
+    this.defaultShell = res.defaultShell
+  },
   data: () => ({
-    dialog: false
+    dialog: false,
+    dafaultShell: ''
   })
+
 }
 </script>

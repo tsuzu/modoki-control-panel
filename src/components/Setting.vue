@@ -120,7 +120,6 @@ export default {
           }
         ],
         loading: true,
-        pagination: {},
         headers: [
           { text: 'Label', sortable: false, align: 'left' },
           { text: 'Hash', sortable: false, align: 'left' },
@@ -133,7 +132,6 @@ export default {
           {text: 'Value', sortable: false}
         ],
         loading: false,
-        pagination: {},
         data: [
           {key: 'Name', value: 'Tsuzu'},
           {key: 'Email', value: 'tsuzu.0623@gmail.com'},
