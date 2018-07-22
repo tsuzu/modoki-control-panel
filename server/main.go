@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"flag"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/httputil"
 	"os"
 	"os/signal"
 	"syscall"
@@ -28,8 +31,31 @@ var (
 	traefikAddr = flag.String("traefikAddr", "http://modoki", "Address to register on traefik")
 	https       = flag.Bool("https", true, "Enable HTTPS")
 	dir         = flag.String("dir", "./", "Path to serve files")
+	debug       = flag.String("debug", "", "Redirection for debug(XXX.XXX.XXX.XXX:8080)")
 	help        = flag.Bool("help", false, "Show this")
 )
+
+func debugHandler() http.Handler {
+	director := func(request *http.Request) {
+		url := *request.URL
+		url.Scheme = "http"
+		url.Host = *debug
+
+		buffer, err := ioutil.ReadAll(request.Body)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		req, err := http.NewRequest(request.Method, url.String(), bytes.NewBuffer(buffer))
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		req.Header = request.Header
+		*request = *req
+	}
+	rp := &httputil.ReverseProxy{Director: director}
+
+	return rp
+}
 
 func main() {
 	flag.Parse()
@@ -49,7 +75,15 @@ func main() {
 		rw.WriteHeader(http.StatusMovedPermanently)
 	})
 
-	mux.Handle("/web/", http.StripPrefix("/web/", http.FileServer(http.Dir(*dir))))
+	var fileHandler http.Handler
+
+	fileHandler = http.StripPrefix("/web/", http.FileServer(http.Dir(*dir)))
+
+	if *debug != "" {
+		fileHandler = debugHandler()
+	}
+
+	mux.Handle("/web/", fileHandler)
 
 	server := http.Server{
 		Addr:    ":80",
