@@ -45,11 +45,11 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(rw http.ResponseWriter, req *http.Request) {
-		rw.Header().Add("Location", "/web")
+		rw.Header().Add("Location", "/web/")
 		rw.WriteHeader(http.StatusMovedPermanently)
 	})
 
-	mux.Handle("/web", http.StripPrefix("/web/", http.FileServer(http.Dir(*dir))))
+	mux.Handle("/web/", http.StripPrefix("/web/", http.FileServer(http.Dir(*dir))))
 
 	server := http.Server{
 		Addr:    ":80",
